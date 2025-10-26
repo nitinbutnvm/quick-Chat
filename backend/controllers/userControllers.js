@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 
 
 // signup
-export const signup = (req, res) => {
+export const signup = async (req, res) => {
     const { email, fullName, password, bio } = req.body;
 
     try {
@@ -33,3 +33,29 @@ export const signup = (req, res) => {
         res.status(500).json({ success: false ,message: error.message });
         
     }
+}
+
+// login
+
+export const login = async (req, res) => {
+    
+    try {
+        const { email, password } = req.body;
+        const userData = await User.findOne({ email });
+
+        const isPasswordCorrect = await bcrypt.compare(password, userData.password );
+
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+
+        const token = generateToken(userData._id) 
+
+        res.json({success:true, userData, token, message:"Login successfully"})
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ success: false ,message: error.message });
+        
+    }
+}
