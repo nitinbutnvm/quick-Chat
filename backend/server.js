@@ -5,9 +5,30 @@ import http from "http"
 import { connectDB } from "./lib/db.js"
 import userRouter from "./routes/userRoutes.js"
 import messageRouter from "./routes/messageRoutes.js"
+import {server} from "socket.io"
 
 const app = express()
 const server = http.createServer(app)
+
+// Socket.io setup
+export const io = new server.Server(server, {
+    cors:{origin: "*"} 
+})
+
+// store online users
+export const userSocketMap =  {}
+
+// socket conn handler
+io.on("connection", (socket) => {
+    const userId = socket.handshake.query;
+    console.log("User Connected", userId );
+
+    if(userId) userSocketMap[userId] = socket.id;
+
+    // emit online users
+    io.emit("getOnlineUsers", Object.keys(user))
+
+})
 
 // middleware
 app.use(cors())
