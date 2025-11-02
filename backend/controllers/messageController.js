@@ -5,9 +5,9 @@ import { io, userSocketMap } from "../server.js";
 
 
 // get all user except lgin user
-export const getUsersForSidebar = async () => {
+export const getUsersForSidebar = async (req, res) => {
   try {
-    const userId = requestAnimationFrame.user._id;
+    const userId = req.user._id;
     const filteredUsers = await User.find({ _id: { $ne: userId } }).select(
       "-password"
     );
@@ -46,7 +46,8 @@ export const getMessages = async (req, res) => {
             ]
         })
         await Message.updateMany(
-            { senderId: selectedUserId, receiverId: myId}, {seen: false },
+            { senderId: selectedUserId, receiverId: myId}, 
+            { $set: {seen: true} },
             
         );
         res.json({ success:true, messages });
