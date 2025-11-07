@@ -13,7 +13,7 @@ const server = http.createServer(app);
 // ✅ Socket.io setup
 export const io = new Server(server, {
   cors: {
-    origin: "https://quick-chat-gilt-pi.vercel.app/",
+    origin: "https://quick-chat-gilt-pi.vercel.app",
     credentials: true
   }
 });
